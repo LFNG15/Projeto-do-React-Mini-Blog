@@ -18,6 +18,16 @@ const Navbar = () => {
             Sobre
           </NavLink>
         </li>
+        <li>
+          <NavLink to="/login" className={styles.active}>
+            Entrar
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/register" className={styles.active}>
+            Cadastrar
+          </NavLink>
+        </li>
       </ul>
     </nav>
   );
