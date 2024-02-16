@@ -1,5 +1,7 @@
 import styles from "./Register.module.css";
-import { useState, useEffect } from "react";
+
+import { useEffect, useState } from "react";
+import { useAuthentication } from "../../hooks/useAuthentication";
 
 const Register = () => {
   const [displayName, setDisplayName] = useState("");
@@ -8,7 +10,9 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const { createUser, error: authError, loading } = useAuthentication();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     setError("");
@@ -20,63 +24,76 @@ const Register = () => {
     };
 
     if (password !== confirmPassword) {
-      setError("As senhas precisam ser iguais!");
+      setError("As senhas precisam ser iguais.");
       return;
     }
 
-    console.log(user);
+    const res = await createUser(user);
+
+    console.log(res);
   };
+
+  useEffect(() => {
+    if (authError) {
+      setError(authError);
+    }
+  }, [authError]);
 
   return (
     <div className={styles.register}>
       <h1>Cadastre-se para postar</h1>
-      <p>Crie seu usuário e compartilhe sua postagem</p>
+      <p>Crie seu usuário e compartilhe suas histórias</p>
       <form onSubmit={handleSubmit}>
         <label>
-          <span>Nome</span>
+          <span>Nome:</span>
           <input
             type="text"
             name="displayName"
             required
             placeholder="Nome do usuário"
+            onChange={(e) => setDisplayName(e.target.value)}
             value={displayName}
-            onCharge={(e) => setDisplayName(e.target.value)}
           />
         </label>
         <label>
-          <span>Email</span>
+          <span>E-mail:</span>
           <input
             type="email"
             name="email"
             required
-            placeholder="Email do usuário"
+            placeholder="E-mail do usuário"
+            onChange={(e) => setEmail(e.target.value)}
             value={email}
-            onCharge={(e) => setEmail(e.target.value)}
           />
         </label>
         <label>
-          <span>Senha</span>
+          <span>Senha:</span>
           <input
             type="password"
             name="password"
             required
-            placeholder="Insira sua senha"
+            placeholder="Insira a senha"
+            onChange={(e) => setPassword(e.target.value)}
             value={password}
-            onCharge={(e) => setPassword(e.target.value)}
           />
         </label>
         <label>
-          <span>Senha</span>
+          <span>Confirmação de senha:</span>
           <input
             type="password"
             name="confirmPassword"
             required
-            placeholder="Confirme a sua senha"
+            placeholder="Confirme a senha"
+            onChange={(e) => setConfirmPassword(e.target.value)}
             value={confirmPassword}
-            onCharge={(e) => setConfirmPassword(e.target.value)}
           />
         </label>
-        <button className="btn">Cadastrar</button>
+        {!loading && <button className="btn">Entrar</button>}
+        {loading && (
+          <button className="btn" disabled>
+            Aguarde...
+          </button>
+        )}
         {error && <p className="error">{error}</p>}
       </form>
     </div>
