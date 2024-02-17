@@ -13,6 +13,7 @@ export const useAuthentication = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(null);
 
+  // deal with memory leak
   const [cancelled, setCancelled] = useState(false);
 
   const auth = getAuth();
@@ -39,8 +40,6 @@ export const useAuthentication = () => {
         displayName: data.displayName,
       });
 
-      setLoading(false);
-
       return user;
     } catch (error) {
       console.log(error.message);
@@ -55,9 +54,11 @@ export const useAuthentication = () => {
       } else {
         systemErrorMessage = "Ocorreu um erro, por favor tenta mais tarde.";
       }
-      setLoading(false);
+
       setError(systemErrorMessage);
     }
+
+    setLoading(false);
   };
 
   const logout = () => {
