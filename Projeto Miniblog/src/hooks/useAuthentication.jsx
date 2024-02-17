@@ -72,7 +72,7 @@ export const useAuthentication = () => {
 
     setLoading(true);
     setError(false);
-
+    
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password);
     } catch (error) {
